@@ -102,7 +102,7 @@ export function MessageInput() {
     // Handle voice message logic here
   };
   return (
-    <div className="border-t bg-white p-4 shadow-sm">
+    <div className="border-t bg-background p-4 shadow-sm">
       <form onSubmit={handleSubmit} className="flex items-end space-x-2">
         <div className="flex space-x-1">
           <FileUpload onFileSelect={handleFileSelect} />
@@ -114,7 +114,7 @@ export function MessageInput() {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className="flex-1 rounded-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          className="flex-1 rounded-full"
           disabled={!activeUserId || !isConnected}
         />
         
@@ -123,7 +123,7 @@ export function MessageInput() {
             <Button
               type="submit"
               size="sm"
-              className="h-9 w-9 p-0 rounded-full bg-blue-500 hover:bg-blue-600"
+              className="h-9 w-9 p-0 rounded-full"
               disabled={
                 !content.trim() || !activeUserId || !isConnected || !message
               }

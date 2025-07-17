@@ -8,6 +8,7 @@ import { useState } from "react";
 import { SessionProvider as NextAuthProvider } from "next-auth/react";
 import { SocketProvider } from "@/context/SocketContext";
 import AuthProvider from "@/context/AuthContext";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -45,15 +46,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <NextAuthProvider>
-      <AuthProvider>
-        <SocketProvider>
-          <QueryClientProvider client={queryClient}>
-            {children}
-            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-            <Toaster />
-          </QueryClientProvider>
-        </SocketProvider>
-      </AuthProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <AuthProvider>
+          <SocketProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+              {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+              <Toaster />
+            </QueryClientProvider>
+          </SocketProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </NextAuthProvider>
   );
 }

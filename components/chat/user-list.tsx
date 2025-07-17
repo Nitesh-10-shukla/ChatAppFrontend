@@ -19,6 +19,7 @@ import { Skeleton } from "../ui/skeleton";
 import { useQueryParam } from "@/hooks/useQueryParam";
 import { useLogout } from "@/hooks/useLogout";
 import { UserProfileModal } from "./user-profile-modal";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function UserList() {
   const {
@@ -100,12 +101,12 @@ export function UserList() {
 
   return (
     <>
-      <div className="h-full flex flex-col bg-white">
+      <div className="h-full flex flex-col bg-background border-r">
       {/* Header */}
-        <div className="p-4 border-b bg-gray-50">
+        <div className="p-4 border-b bg-muted/30">
         <div className="flex items-center justify-between">
             <div 
-              className="flex items-center space-x-3 cursor-pointer hover:bg-gray-100 rounded-lg p-2 -m-2 transition-colors"
+              className="flex items-center space-x-3 cursor-pointer hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors"
               onClick={() => setShowOwnProfile(true)}
             >
             <Avatar className="h-10 w-10">
@@ -115,12 +116,14 @@ export function UserList() {
               </AvatarFallback>
             </Avatar>
             <div>
-                <p className="font-semibold text-gray-900">{currentUser?.username}</p>
-                <p className="text-sm text-green-600">Online</p>
+                <p className="font-semibold text-foreground">{currentUser?.username}</p>
+                <p className="text-sm text-green-500 dark:text-green-400">Online</p>
             </div>
           </div>
 
-          <DropdownMenu>
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
+            <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <MoreVertical className="h-4 w-4" />
@@ -137,16 +140,17 @@ export function UserList() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
 
           {/* Search Bar */}
           <div className="mt-4 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search users..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+              className="pl-10 bg-background"
             />
           </div>
       </div>
@@ -154,7 +158,7 @@ export function UserList() {
       {/* Users List */}
         <ScrollArea className="flex-1">
           <div className="p-3">
-            <h3 className="text-sm font-semibold text-gray-600 mb-3 px-2">
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3 px-2">
               Contacts ({otherUsers.length})
           </h3>
             <div className="space-y-1">
@@ -177,7 +181,7 @@ export function UserList() {
                       <Button
                         variant={activeUserId === user.id ? "secondary" : "ghost"}
                         className={`w-full justify-start h-auto p-3 transition-all hover:bg-gray-50 ${
-                          activeUserId === user.id ? "bg-blue-50 border-r-2 border-blue-500" : ""
+                          activeUserId === user.id ? "bg-primary/10 border-r-2 border-primary" : ""
                         }`}
                         onClick={() => handleUserClick(user.id, user.username)}
                       >
@@ -190,16 +194,16 @@ export function UserList() {
                           </AvatarFallback>
                         </Avatar>
                         <div
-                              className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white ${
-                                user.isOnline ? "bg-green-500" : "bg-gray-400"
+                              className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-background ${
+                                user.isOnline ? "bg-green-500" : "bg-muted-foreground"
                           }`}
                         />
                       </div>
                       <div className="flex-1 text-left">
-                            <p className="font-semibold text-sm text-gray-900">{user.username}</p>
-                            <p className="text-xs text-gray-500">
+                            <p className="font-semibold text-sm text-foreground">{user.username}</p>
+                            <p className="text-xs text-muted-foreground">
                           {isTyping ? (
-                                <span className="animate-pulse text-blue-600 font-medium">
+                                <span className="animate-pulse text-primary font-medium">
                               typing...
                             </span>
                           ) : user.isOnline ? (

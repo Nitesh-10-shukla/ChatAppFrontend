@@ -96,8 +96,8 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
     <>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full">
-            <Paperclip className="h-5 w-5 text-gray-600" />
+          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-muted rounded-full">
+            <Paperclip className="h-5 w-5 text-muted-foreground" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-56 p-2" side="top" align="start">
@@ -118,7 +118,7 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
       </Popover>
 
       {uploadProgress !== null && (
-        <div className="fixed bottom-20 left-4 right-4 bg-white border rounded-lg shadow-lg p-4 z-50">
+        <div className="fixed bottom-20 left-4 right-4 bg-background border rounded-lg shadow-lg p-4 z-50">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Uploading file...</span>
             <Button
@@ -131,7 +131,7 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
             </Button>
           </div>
           <Progress value={uploadProgress} className="h-2" />
-          <span className="text-xs text-gray-500 mt-1">{uploadProgress}%</span>
+          <span className="text-xs text-muted-foreground mt-1">{uploadProgress}%</span>
         </div>
       )}
     </>

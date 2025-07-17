@@ -24,10 +24,10 @@ export function ChatHeader() {
 
   return (
     <>
-      <div className="border-b bg-white p-4 shadow-sm">
+      <div className="border-b bg-background p-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div 
-            className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors flex-1"
+            className="flex items-center space-x-3 cursor-pointer hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors flex-1"
             onClick={() => setShowProfileModal(true)}
           >
         <div className="relative">
@@ -38,21 +38,21 @@ export function ChatHeader() {
             </AvatarFallback>
           </Avatar>
           <div
-              className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white ${
-              activeUser.isOnline ? "bg-green-500" : "bg-gray-400"
+              className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-background ${
+              activeUser.isOnline ? "bg-green-500" : "bg-muted-foreground"
             }`}
           />
         </div>
         <div className="flex-1">
-            <h2 className="font-semibold text-gray-900">{activeUser?.username}</h2>
+            <h2 className="font-semibold text-foreground">{activeUser?.username}</h2>
           <div className="flex items-center space-x-2">
             {isTyping && (
-                <span className="text-sm text-blue-600 animate-pulse font-medium">
+                <span className="text-sm text-primary animate-pulse font-medium">
                 typing...
               </span>
             )}
             {!isTyping && (
-              <span className={`text-sm ${activeUser.isOnline ? "text-green-600" : "text-gray-500"}`}>
+              <span className={`text-sm ${activeUser.isOnline ? "text-green-500 dark:text-green-400" : "text-muted-foreground"}`}>
                 {activeUser.isOnline ? "Online" : "Offline"}
               </span>
             )}
@@ -63,16 +63,16 @@ export function ChatHeader() {
           {/* Action Buttons */}
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
-              <Phone className="h-5 w-5 text-gray-600" />
+              <Phone className="h-5 w-5 text-muted-foreground" />
             </Button>
             <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
-              <Video className="h-5 w-5 text-gray-600" />
+              <Video className="h-5 w-5 text-muted-foreground" />
             </Button>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
-                  <MoreVertical className="h-5 w-5 text-gray-600" />
+                  <MoreVertical className="h-5 w-5 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">

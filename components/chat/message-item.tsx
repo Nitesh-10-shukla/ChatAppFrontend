@@ -68,15 +68,15 @@ export function MessageItem({ message, isOwn }: MessageItemProps) {
         <div
           className={`relative rounded-2xl px-4 py-2 shadow-sm ${
             isOwn 
-              ? "bg-blue-500 text-white" 
-              : "bg-gray-100 text-gray-900"
+              ? "bg-primary text-primary-foreground" 
+              : "bg-muted text-foreground"
           } ${
             isOwn ? "rounded-br-md" : "rounded-bl-md"
           }`}
         >
           <p className="text-sm">
             {message?.isDeleted ? (
-              <i className="text-gray-500 italic">
+              <i className="text-muted-foreground italic">
                 {isOwn
                   ? "You deleted this message"
                   : "This message was deleted"}
@@ -98,7 +98,8 @@ export function MessageItem({ message, isOwn }: MessageItemProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="p-1 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
-                    <MoreHorizontal className="w-4 h-4 text-gray-600" />
+                 <button className="p-1 rounded-full bg-background border shadow-sm hover:bg-muted transition-colors">
+                    <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -128,7 +129,7 @@ export function MessageItem({ message, isOwn }: MessageItemProps) {
 
         {/* Timestamp */}
         <span className={`text-xs mt-1 ${
-          isOwn ? "text-gray-500" : "text-gray-500"
+          "text-muted-foreground"
         }`}>
           {formatTime(message.timestamp)}
         </span>

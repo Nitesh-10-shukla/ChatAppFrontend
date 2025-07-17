@@ -40,12 +40,12 @@ export function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full">
-          <Smile className="h-5 w-5 text-gray-600" />
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-muted rounded-full">
+          <Smile className="h-5 w-5 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" side="top" align="start">
-        <div className="border-b bg-gray-50">
+        <div className="border-b bg-muted/30">
           <div className="flex">
             {Object.keys(EMOJI_CATEGORIES).map((category) => (
               <Button
@@ -68,6 +68,7 @@ export function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
                 variant="ghost"
                 size="sm"
                 className="h-8 w-8 p-0 text-lg hover:bg-gray-100 rounded"
+                className="h-8 w-8 p-0 text-lg hover:bg-muted rounded"
                 onClick={() => onEmojiSelect(emoji)}
               >
                 {emoji}

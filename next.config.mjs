@@ -10,6 +10,9 @@ const nextConfig = {
     domains: ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'],
     unoptimized: true,
   },
+  experimental: {
+    optimizePackageImports: ['next-themes'],
+  },
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'your-secret-key',

@@ -60,9 +60,9 @@ export function MessageList() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50">
+      <div className="flex-1 flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-500" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
           <p className="mt-3 text-sm text-gray-600">
             Loading messages...
           </p>
@@ -73,13 +73,13 @@ export function MessageList() {
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50">
+      <div className="flex-1 flex items-center justify-center bg-background">
         <div className="text-center">
           <p className="text-sm text-red-600 mb-3">Failed to load messages</p>
           <Button
             variant="outline"
             size="sm"
-            className="bg-white"
+            className="bg-background"
             onClick={() => window.location.reload()}
           >
             Retry
@@ -100,7 +100,7 @@ export function MessageList() {
             <Button
               variant="outline"
               size="sm"
-              className="bg-white shadow-sm"
+              className="bg-background shadow-sm"
               onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}
             >
@@ -118,13 +118,13 @@ export function MessageList() {
 
         {chatMessages.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
-            <p className="text-gray-500 text-lg font-medium">No messages yet</p>
-            <p className="text-gray-400 text-sm mt-1">Start the conversation!</p>
+            <p className="text-muted-foreground text-lg font-medium">No messages yet</p>
+            <p className="text-muted-foreground/70 text-sm mt-1">Start the conversation!</p>
           </div>
         ) : (
           chatMessages.map((message) => (
