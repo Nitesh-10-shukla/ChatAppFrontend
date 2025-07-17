@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
 import { useTyping } from "@/hooks/use-typing";
+import { EmojiPicker } from "./emoji-picker";
+import { FileUpload } from "./file-upload";
+import { VoiceRecorder } from "./voice-recorder";
 
 export function MessageInput() {
   const { activeUserId, message, setMessage } = useChatStore();
@@ -73,26 +76,64 @@ export function MessageInput() {
     }
   };
 
+  const handleEmojiSelect = (emoji: string) => {
+    if (!activeUserId) return;
+
+    const baseMessage = message ?? {
+      id: "",
+      content: "",
+      senderId: "",
+      receiverId: activeUserId,
+      timestamp: new Date(),
+      isRead: false,
+      isDeleted: false,
+    };
+
+    setMessage({ ...baseMessage, content: content + emoji });
+  };
+
+  const handleFileSelect = (file: File, type: string) => {
+    console.log("File selected:", file, type);
+    // Handle file upload logic here
+  };
+
+  const handleVoiceMessage = (audioBlob: Blob, duration: number) => {
+    console.log("Voice message:", audioBlob, duration);
+    // Handle voice message logic here
+  };
   return (
-    <div className="border-t bg-white p-4">
-      <form onSubmit={handleSubmit} className="flex space-x-2">
+    <div className="border-t bg-white p-4 shadow-sm">
+      <form onSubmit={handleSubmit} className="flex items-end space-x-2">
+        <div className="flex space-x-1">
+          <FileUpload onFileSelect={handleFileSelect} />
+          <EmojiPicker onEmojiSelect={handleEmojiSelect} />
+        </div>
+        
         <Input
           value={content}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className="flex-1"
+          className="flex-1 rounded-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           disabled={!activeUserId || !isConnected}
         />
-        <Button
-          type="submit"
-          size="icon"
-          disabled={
-            !content.trim() || !activeUserId || !isConnected || !message
-          }
-        >
-          <Send className="h-4 w-4" />
-        </Button>
+        
+        <div className="flex space-x-1">
+          {content.trim() ? (
+            <Button
+              type="submit"
+              size="sm"
+              className="h-9 w-9 p-0 rounded-full bg-blue-500 hover:bg-blue-600"
+              disabled={
+                !content.trim() || !activeUserId || !isConnected || !message
+              }
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          ) : (
+            <VoiceRecorder onVoiceMessage={handleVoiceMessage} />
+          )}
+        </div>
       </form>
     </div>
   );

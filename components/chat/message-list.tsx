@@ -60,10 +60,10 @@ export function MessageList() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-          <p className="mt-2 text-sm text-muted-foreground">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-500" />
+          <p className="mt-3 text-sm text-gray-600">
             Loading messages...
           </p>
         </div>
@@ -73,13 +73,13 @@ export function MessageList() {
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <p className="text-sm text-destructive">Failed to load messages</p>
+          <p className="text-sm text-red-600 mb-3">Failed to load messages</p>
           <Button
             variant="outline"
             size="sm"
-            className="mt-2 bg-transparent"
+            className="bg-white"
             onClick={() => window.location.reload()}
           >
             Retry
@@ -92,14 +92,15 @@ export function MessageList() {
   return (
     <ScrollArea
       ref={scrollAreaRef}
-      className="flex-1 p-4 h-[calc(100vh-50px)]" // Fixed height
+      className="flex-1 h-[calc(100vh-140px)]" // Fixed height
     >
-      <div className="space-y-4">
+      <div className="p-4 space-y-2">
         {hasNextPage && (
           <div className="text-center">
             <Button
               variant="outline"
               size="sm"
+              className="bg-white shadow-sm"
               onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}
             >
@@ -116,8 +117,14 @@ export function MessageList() {
         )}
 
         {chatMessages.length === 0 ? (
-          <div className="text-center text-muted-foreground py-8">
-            No messages yet. Start the conversation!
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <p className="text-gray-500 text-lg font-medium">No messages yet</p>
+            <p className="text-gray-400 text-sm mt-1">Start the conversation!</p>
           </div>
         ) : (
           chatMessages.map((message) => (

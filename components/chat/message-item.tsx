@@ -44,74 +44,39 @@ export function MessageItem({ message, isOwn }: MessageItemProps) {
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative flex items-start space-x-3 py-1 mt-24 group ${
+      className={`relative flex items-start space-x-3 py-3 group ${
         isOwn ? "flex-row-reverse space-x-reverse" : ""
       }`}
     >
-      {/* Avatar with dropdown menu positioned above */}
+      {/* Avatar */}
       <div className="relative">
-        <Avatar className="h-8 w-8">
+        <Avatar className="h-8 w-8 flex-shrink-0">
           <AvatarImage src={sender?.avatar || ""} />
           <AvatarFallback>
             {sender?.name?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-
-        {/* Dropdown menu positioned above avatar */}
-        {isOwn && !message?.isDeleted && (
-          <div
-            className={`absolute -top-2 ${isOwn ? "-left-2" : "-right-2"} z-10`}
-          >
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className={`p-1.5 rounded-full bg-background border border-border shadow-sm hover:bg-muted transition-all duration-200 ${
-                    isHovered ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                  }`}
-                >
-                  <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                side={isOwn ? "left" : "right"}
-                align="start"
-                className="w-40"
-              >
-                <DropdownMenuItem
-                  onClick={handleEdit}
-                  className="cursor-pointer"
-                >
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  className="cursor-pointer text-red-600 focus:text-red-600"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
       </div>
 
-      {/* Message + Time */}
+      {/* Message Content */}
       <div
         className={`flex flex-col ${
           isOwn ? "items-end" : "items-start"
-        } max-w-xs lg:max-w-md`}
+        } max-w-xs lg:max-w-md xl:max-w-lg relative`}
       >
+        {/* Message Bubble */}
         <div
-          className={`rounded-lg px-3 py-2 ${
-            isOwn ? "bg-primary text-primary-foreground" : "bg-muted"
+          className={`relative rounded-2xl px-4 py-2 shadow-sm ${
+            isOwn 
+              ? "bg-blue-500 text-white" 
+              : "bg-gray-100 text-gray-900"
+          } ${
+            isOwn ? "rounded-br-md" : "rounded-bl-md"
           }`}
         >
           <p className="text-sm">
             {message?.isDeleted ? (
-              <i className="text-muted-foreground">
+              <i className="text-gray-500 italic">
                 {isOwn
                   ? "You deleted this message"
                   : "This message was deleted"}
@@ -120,9 +85,51 @@ export function MessageItem({ message, isOwn }: MessageItemProps) {
               message.content
             )}
           </p>
+
+          {/* Message Actions */}
+          {isOwn && !message?.isDeleted && (
+            <div
+              className={`absolute ${
+                isOwn ? "-left-8" : "-right-8"
+              } top-1/2 transform -translate-y-1/2 transition-opacity duration-200 ${
+                isHovered ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-1 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
+                    <MoreHorizontal className="w-4 h-4 text-gray-600" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  side={isOwn ? "left" : "right"}
+                  align="center"
+                  className="w-40"
+                >
+                  <DropdownMenuItem
+                    onClick={handleEdit}
+                    className="cursor-pointer"
+                  >
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleDelete}
+                    className="cursor-pointer text-red-600 focus:text-red-600"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
         </div>
 
-        <span className="text-xs text-muted-foreground mt-1">
+        {/* Timestamp */}
+        <span className={`text-xs mt-1 ${
+          isOwn ? "text-gray-500" : "text-gray-500"
+        }`}>
           {formatTime(message.timestamp)}
         </span>
       </div>

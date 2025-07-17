@@ -4,19 +4,21 @@ import { useChatStore } from "@/store/chat-store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Search, MoreVertical } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { User } from "@/lib/types";
 import { Skeleton } from "../ui/skeleton";
 import { useQueryParam } from "@/hooks/useQueryParam";
 import { useLogout } from "@/hooks/useLogout";
+import { UserProfileModal } from "./user-profile-modal";
 
 export function UserList() {
   const {
@@ -29,6 +31,10 @@ export function UserList() {
   } = useChatStore();
 
   const { setParam, getParam } = useQueryParam();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showOwnProfile, setShowOwnProfile] = useState(false);
 
   const usersApi = new UsersApi();
 
@@ -53,7 +59,12 @@ export function UserList() {
     }
   }, [data, setUsers]);
 
-  const otherUsers = users.filter((user) => user.id !== currentUser?.id);
+  const otherUsers = users
+    .filter((user) => user.id !== currentUser?.id)
+    .filter((user) => 
+      user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   const logoutMutation = useLogout();
 
@@ -66,6 +77,17 @@ export function UserList() {
     setParam("user", username); // store username in query param
   };
 
+  const handleUserProfileClick = (user: User) => {
+    setSelectedUser(user);
+    setShowProfileModal(true);
+  };
+
+  const handleStartChat = () => {
+    if (selectedUser) {
+      handleUserClick(selectedUser.id, selectedUser.username);
+      setShowProfileModal(false);
+    }
+  };
   useEffect(() => {
     const usernameInQuery = getParam("user");
     if (usernameInQuery) {
@@ -77,30 +99,38 @@ export function UserList() {
   }, [users, getParam, setActiveUser]);
 
   return (
-    <div className="h-full flex flex-col">
+    <>
+      <div className="h-full flex flex-col bg-white">
       {/* Header */}
-      <div className="p-4 border-b">
+        <div className="p-4 border-b bg-gray-50">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Avatar>
+            <div 
+              className="flex items-center space-x-3 cursor-pointer hover:bg-gray-100 rounded-lg p-2 -m-2 transition-colors"
+              onClick={() => setShowOwnProfile(true)}
+            >
+            <Avatar className="h-10 w-10">
               <AvatarImage src={currentUser?.avatar || ""} />
               <AvatarFallback>
                 {currentUser?.username?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium">{currentUser?.username}</p>
-              <p className="text-sm text-muted-foreground">Online</p>
+                <p className="font-semibold text-gray-900">{currentUser?.username}</p>
+                <p className="text-sm text-green-600">Online</p>
             </div>
           </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-4 w-4" />
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => setShowOwnProfile(true)}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign out
@@ -108,47 +138,68 @@ export function UserList() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+          {/* Search Bar */}
+          <div className="mt-4 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
       </div>
 
       {/* Users List */}
-      <ScrollArea className="flex-1">
-        <div className="p-2">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2 px-2">
-            Users ({otherUsers.length})
+        <ScrollArea className="flex-1">
+          <div className="p-3">
+            <h3 className="text-sm font-semibold text-gray-600 mb-3 px-2">
+              Contacts ({otherUsers.length})
           </h3>
-          <div className="space-y-1">
+            <div className="space-y-1">
             {isLoading ? (
-              <Skeleton className="h-12 w-full" />
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-center space-x-3 p-3">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1">
+                      <Skeleton className="h-4 w-24 mb-1" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
+                  </div>
+                ))
             ) : (
               otherUsers.map((user) => {
                 const isTyping = user.id && typingUsers.includes(user.id); // Add this line
 
                 return (
-                  <Button
-                    key={user.id}
-                    variant={activeUserId === user.id ? "secondary" : "ghost"}
-                    className="w-full justify-start h-auto p-3"
-                    onClick={() => handleUserClick(user.id, user.username)}
-                  >
-                    <div className="flex items-center space-x-3 w-full">
+                    <div key={user.id} className="relative group">
+                      <Button
+                        variant={activeUserId === user.id ? "secondary" : "ghost"}
+                        className={`w-full justify-start h-auto p-3 transition-all hover:bg-gray-50 ${
+                          activeUserId === user.id ? "bg-blue-50 border-r-2 border-blue-500" : ""
+                        }`}
+                        onClick={() => handleUserClick(user.id, user.username)}
+                      >
+                        <div className="flex items-center space-x-3 w-full">
                       <div className="relative">
-                        <Avatar className="h-8 w-8">
+                            <Avatar className="h-12 w-12">
                           <AvatarImage src={user?.avatar || ""} />
                           <AvatarFallback>
                             {user.username?.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div
-                          className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
-                            user.isOnline ? "bg-green-500" : "bg-gray-400"
+                              className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white ${
+                                user.isOnline ? "bg-green-500" : "bg-gray-400"
                           }`}
                         />
                       </div>
                       <div className="flex-1 text-left">
-                        <p className="font-medium text-sm">{user.username}</p>
-                        <p className="text-xs text-muted-foreground">
+                            <p className="font-semibold text-sm text-gray-900">{user.username}</p>
+                            <p className="text-xs text-gray-500">
                           {isTyping ? (
-                            <span className="animate-pulse text-blue-500">
+                                <span className="animate-pulse text-blue-600 font-medium">
                               typing...
                             </span>
                           ) : user.isOnline ? (
@@ -159,13 +210,48 @@ export function UserList() {
                         </p>
                       </div>
                     </div>
-                  </Button>
+                      </Button>
+                      
+                      {/* Profile button on hover */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleUserProfileClick(user);
+                        }}
+                      >
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </div>
                 );
               })
             )}
           </div>
         </div>
-      </ScrollArea>
-    </div>
+        </ScrollArea>
+      </div>
+
+      {/* Profile Modals */}
+      <UserProfileModal
+        user={selectedUser}
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        isOwnProfile={false}
+        onStartChat={handleStartChat}
+      />
+
+      <UserProfileModal
+        user={currentUser}
+        isOpen={showOwnProfile}
+        onClose={() => setShowOwnProfile(false)}
+        isOwnProfile={true}
+        onUpdateProfile={(data) => {
+          console.log("Update profile:", data);
+          // Handle profile update
+        }}
+      />
+    </>
   );
 }
